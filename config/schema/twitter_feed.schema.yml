@@ -27,3 +27,9 @@ block.settings.twitter_feed_block:
     display_avatars:
       type: boolean
       label: Display avatars
+    display_retweets:
+      type: boolean
+      label: Display retweets
+    exclude_replies:
+      type: boolean
+      label: Exclude replies
