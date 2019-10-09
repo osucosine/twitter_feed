@@ -12,6 +12,10 @@ use Drupal\Core\Routing\RouteMatchInterface;
  */
 function twitter_feed_theme($existing, $type, $theme, $path) {
   return [
+    'twitter_feed' => [
+      'template' => 'twitter-feed',
+      'variables' => ['items' => NULL],
+    ],
     'twitter_feed_item' => [
       'template' => 'twitter-feed-item',
       'variables' => ['tweet' => NULL],
@@ -137,13 +141,29 @@ function twitter_feed_timeago_languages() {
  * Implements hook_preprocess_twitter_feed_item().
  */
 function template_preprocess_twitter_feed_item(&$vars) {
+
+  $config = \Drupal::config('twitter_feed.settings');
+  $block_config = \Drupal::config('block.block.twitterfeedblock');
   $tweet = $vars['tweet'];
+
+  $vars['tweet_url'] = 'https://twitter.com/'. $tweet->user->screen_name . '/status/'. $tweet->id;
+
+  // Save the raw version of the text, key depends on tweet_mode
+  $vars['text_raw'] = ['#markup' => ( $block_config->get('settings.tweet_mode') ? $tweet->full_text : $tweet->text)];
+
   // Creates a fake input_format so we can use some internal Drupal filters.
   $fake_filter = new stdClass();
   $fake_filter->settings = ['filter_url_length' => 72];
+
   // Converts URLs to links and line-breaks to paragraphs.
   // TODO hashtags and usernames.
-  $vars['text'] = ['#markup' => _filter_autop(_filter_url($tweet->text, $fake_filter))];
+  $text = _filter_url($vars['text_raw']['#markup'], $fake_filter);
+
+  if ($block_config->get('settings.strip_anchors')) {
+    $text = twitter_feed_strip_tags_content($text);
+  }
+  $vars['text'] = ['#markup' => $text];
+
   // This is the datestamp that jQuery timeago expects.
   $vars['date']['stamp'] = date('c', strtotime($tweet->created_at));
   $vars['date']['clean'] = \Drupal::service('date.formatter')->format(strtotime($tweet->created_at), 'short');
@@ -171,4 +191,36 @@ function twitter_feed_help($route_name, RouteMatchInterface $route_match) {
       }
   }
   return NULL;
+}
+
+/**
+ * Helper function to strip html tags and their contents
+ * https://www.php.net/manual/en/function.strip-tags.php#86964
+ *
+ * @param text
+ *   String to parse
+ * @param tags
+ *   Tags to preserve
+ * @param invert
+ *    Invert the operation, save all tags but those provided
+ * @return string
+ *   The stripped string
+ */
+function twitter_feed_strip_tags_content($text, $tags = '', $invert = FALSE) {
+
+  preg_match_all('/<(.+?)[\s]*\/?[\s]*>/si', trim($tags), $tags);
+  $tags = array_unique($tags[1]);
+
+  if(is_array($tags) AND count($tags) > 0) {
+    if($invert == FALSE) {
+      return preg_replace('@<(?!(?:'. implode('|', $tags) .')\b)(\w+)\b.*?>.*?</\1>@si', '', $text);
+    }
+    else {
+      return preg_replace('@<('. implode('|', $tags) .')\b.*?>.*?</\1>@si', '', $text);
+    }
+  }
+  elseif($invert == FALSE) {
+    return preg_replace('@<(\w+)\b.*?>.*?</\1>@si', '', $text);
+  }
+  return $text;
 }

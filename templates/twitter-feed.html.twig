@@ -1,0 +1,15 @@
+{#
+/**
+ * @file
+ * twitter_feed wrapper
+ *
+ * Available variables:
+ * - items: The array of tweets that were fetched
+ */
+#}
+
+<div class="twitter_feed__wrapper">
+{% for item in items %}
+ {{ item }}
+{% endfor %}
+</div>
