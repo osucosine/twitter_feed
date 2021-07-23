@@ -5,6 +5,7 @@
  * Twitter module hooks.
  */
 
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
@@ -121,7 +122,7 @@ function twitter_feed_timeago_languages() {
   }
 
   $path = libraries_get_path('timeago');
-  $files = file_scan_directory("$path/locales", '/timeago\..{2,14}\.js$/i', ['recurse' => FALSE, 'key' => 'name']);
+  $files = Drupal\Core\File\FileSystemInterface::scanDirectory("$path/locales", '/timeago\..{2,14}\.js$/i', ['recurse' => FALSE, 'key' => 'name']);
   $timeago_locales = [];
 
   if ($files) {
