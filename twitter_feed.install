@@ -1,7 +1,5 @@
 <?php
 
-use Drupal\Core\File\FileSystemInterface;
-
 /**
  * @file
  * Installation actions for Twitter Feed.
@@ -15,7 +13,7 @@ use Drupal\Core\File\FileSystemInterface;
 function twitter_feed_uninstall() {
   // Delete all of the configuration installed by this module.
   $dir = drupal_get_path('module', 'twitter_feed') . '/config/install';
-  $files = Drupal\Core\File\FileSystemInterface::scanDirectory($dir, '/.*/');
+  $files = file_scan_directory($dir, '/.*/');
   foreach ($files as $file) {
     \Drupal::configFactory()->getEditable($file->name)->delete();
   }
