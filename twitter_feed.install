@@ -13,7 +13,7 @@
 function twitter_feed_uninstall() {
   // Delete all of the configuration installed by this module.
   $dir = drupal_get_path('module', 'twitter_feed') . '/config/install';
-  $files = Drupal\Core\File\FileSystemInterface::scanDirectory($dir, '/.*/');
+  $files = Drupal::service('file_system')->scanDirectory($dir, '/.*/');
   foreach ($files as $file) {
     \Drupal::configFactory()->getEditable($file->name)->delete();
   }
