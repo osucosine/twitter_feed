@@ -61,18 +61,18 @@ class TwitterFeedConfigForm extends ConfigFormBase {
       '#default_value' => $config->get('twitter_feed_api_secret'),
     ];
 
-    $timeago_locales = twitter_feed_timeago_languages();
-    $timeago_locales = ['None: English'] + $timeago_locales;
+//    $timeago_locales = twitter_feed_timeago_languages();
+//    $timeago_locales = ['None: English'] + $timeago_locales;
 
-    $form['twitter_feed_jquery_timeago_locale'] = [
-      '#type' => 'select',
-      '#title' => $this->t('jQuery Timeago locale'),
-      '#default_value' => !empty($config->get('twitter_feed_jquery_timeago_locale')) ? $config->get('twitter_feed_jquery_timeago_locale') : 0,
-      '#options' => $timeago_locales,
-      '#description' => $this->t('This is the locale file to be loaded from
-      the jQuery timeago module. Located at timeago/locales.
-      Changing this setting requires a cache rebuild to take effect.'),
-    ];
+//    $form['twitter_feed_jquery_timeago_locale'] = [
+//      '#type' => 'select',
+//      '#title' => $this->t('jQuery Timeago locale'),
+//      '#default_value' => !empty($config->get('twitter_feed_jquery_timeago_locale')) ? $config->get('twitter_feed_jquery_timeago_locale') : 0,
+//      '#options' => $timeago_locales,
+//      '#description' => $this->t('This is the locale file to be loaded from
+//      the jQuery timeago module. Located at timeago/locales.
+//      Changing this setting requires a cache rebuild to take effect.'),
+//    ];
 
     return parent::buildForm($form, $form_state);
   }
