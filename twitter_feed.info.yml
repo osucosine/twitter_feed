@@ -1,8 +1,8 @@
 name: Twitter Feed
 type: module
 description: Displays a list of tweets on a block
-version: 1.0
-core_version_requirement: '^8.8 || ^9'
+version: 2.0
+core_version_requirement: '^10 || ^11'
 package: Social
 dependencies:
   - drupal:block
